@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ELSE — Official Site</title>
 <meta name="theme-color" content="#000000">
+<script>if(!window.matchMedia || !matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('entrance');</script>
 <style>
 @font-face{font-family:"Archivo X";src:url(assets/archivo-x.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:block}
 
@@ -272,7 +273,46 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
   .release .arc{left:calc((var(--cw) - 260*var(--as))/2 - 7.5*var(--as))}
 }
 
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* One opening sequence. The smoke and the image-filled ELSE lettering stay still. */
+@media (prefers-reduced-motion:no-preference){
+  html.entrance .logo{animation:entry-logo .62s cubic-bezier(.22,1,.36,1) .04s backwards}
+  html.entrance .musician{animation:entry-figure 1.04s cubic-bezier(.22,1,.36,1) .16s backwards}
+  html.entrance .follow{animation:entry-detail .56s cubic-bezier(.22,1,.36,1) .60s backwards}
+  html.entrance .social{animation:entry-detail .54s cubic-bezier(.22,1,.36,1) .82s backwards}
+  html.entrance .card.tour{animation:entry-card .76s cubic-bezier(.22,1,.36,1) .86s backwards}
+  html.entrance .card.release{animation:entry-card .76s cubic-bezier(.22,1,.36,1) 1.02s backwards}
+  html.entrance .tour .btn{animation:entry-detail .48s cubic-bezier(.22,1,.36,1) 1.27s backwards}
+  html.entrance .release .btn{animation:entry-detail .48s cubic-bezier(.22,1,.36,1) 1.43s backwards}
+  @media (orientation:landscape) and (min-width:50.001em){
+    html.entrance .nav li{animation:entry-detail .50s cubic-bezier(.22,1,.36,1) backwards}
+    html.entrance .nav li:nth-child(1){animation-delay:.34s}
+    html.entrance .nav li:nth-child(2){animation-delay:.39s}
+    html.entrance .nav li:nth-child(3){animation-delay:.44s}
+    html.entrance .nav li:nth-child(4){animation-delay:.49s}
+    html.entrance .nav li:nth-child(5){animation-delay:.54s}
+  }
+  @media (orientation:portrait), (orientation:landscape) and (max-width:50em){
+    html.entrance .menu-btn{animation:entry-detail .52s cubic-bezier(.22,1,.36,1) .47s backwards}
+  }
+}
+@keyframes entry-logo{
+  from{opacity:.55;clip-path:inset(0 100% 0 0)}
+  to{opacity:1;clip-path:inset(0 0 0 0)}
+}
+@keyframes entry-figure{
+  from{opacity:0;transform:translate3d(0,12px,0)}
+  to{opacity:1;transform:none}
+}
+@keyframes entry-card{
+  from{opacity:0;transform:translate3d(0,10px,0)}
+  to{opacity:1;transform:none}
+}
+@keyframes entry-detail{
+  from{opacity:0;transform:translate3d(0,5px,0)}
+  to{opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
@@ -319,6 +359,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
 <script>
 (function(){
   var stage=document.getElementById('stage'),btn=document.getElementById('menuBtn'),nav=document.getElementById('primary-nav');
+  if(document.documentElement.classList.contains('entrance')){
+    var last=document.querySelector('.release .btn'),cleanupTimer;
+    function finishEntrance(){clearTimeout(cleanupTimer);document.documentElement.classList.remove('entrance')}
+    last.addEventListener('animationend',function(e){if(e.target===last)finishEntrance()},{once:true});
+    cleanupTimer=setTimeout(finishEntrance,2400);
+  }
   function collapsed(){return getComputedStyle(btn).display!=='none'}
   function focusables(){return [btn].concat([].slice.call(nav.querySelectorAll('a'))).filter(function(el){return el.offsetParent!==null||getComputedStyle(el).position==='absolute'})}
   function setOpen(open,returnFocus){
